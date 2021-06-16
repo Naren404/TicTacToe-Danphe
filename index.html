@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Tic-Tac-Toe</title>
+	<link rel="stylesheet" type="text/css" href="css/main.css">
+	 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	 
+</head>
+<body>
+	<div class="center">
+		<table cellspacing="0" id="game_board_table">
+
+		</table>
+	</div>
+
+	<div class="GameSizeInput center">
+		<form>
+			<input 
+		     placeholder="Enter the game board size.(from 3 to 100)" 
+		     type="number"
+			 id="gameSize"
+			 required
+		/>
+		<!---------start game section------------>
+		<div class="restart">
+			<button type="submit">Start Game</button>
+		</div>
+		</form>
+		
+	</div>
+
+<div class="center">
+ <!----------player turn display---------------->
+	 <div class="" id="player_turn_display">
+	 	<div class="player1" id="player1">Player_O Turn</div>
+	 	<div class="player2" id="player2">Player_X Turn</div>
+	 </div>
+	 <!------------result section------------------>
+	 <div id="result">
+	 </div>
+	 
+	 <!---------restart game section------------>
+	 <div class="restart" style="display: none;">
+	 	<button id="restart">Play Again</button>
+	 </div>
+</div>
+
+<script type="text/javascript" src="script/index.js" defer></script>
+</body>
+</html>
