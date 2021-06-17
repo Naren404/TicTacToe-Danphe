@@ -5,10 +5,15 @@ $('form').on('submit', function(event){
     var enteredGameSize = parseInt($("#gameSize").val());
     newGame = new Game(enteredGameSize);
     newGameBoard = new GameBoard;
-    newGameBoard.createGameBoard(enteredGameSize);
     playerX = new Player("X", true)
     playerO = new Player("O", false)
+    newGameMove = new GameMove;
+    result = new Result;
+
+    newGameBoard.createGameBoard(enteredGameSize);
+
     newGameBoard.setAndHandleCellClick()
+
     // newGameBoard.createGame(enteredGameSize);
     // newGameBoard.setGameArena(); //only for DOM stylings
 }); 
@@ -28,6 +33,7 @@ class Game{
         // the implementation is not needed yet
     }
     updateMoveCount(){
+        this.moveCount +=1
         // the implementation is not needed yet
     }
     declareResult(){
@@ -59,12 +65,16 @@ class GameBoard{
             var sDiagonal = $(this).data('secondary-diagonal');
             var value = Player.getCurrentPlayer()
 
-            var currentCell = new Cell(row,column,pDiagonal,sDiagonal, value);
-            // newGame.updateMoveCount()
+            window["currentCell"+newGame.moveCount] = new Cell(row,column,pDiagonal,sDiagonal, value);
             (playerX.currentPlayer) ? playerO.updateCurrentPlayer(playerX) : playerX.updateCurrentPlayer(playerO)
             $(this).addClass("disabled1");
-            $(this)[0].innerText = currentCell.value
-            console.log(currentCell)
+            $(this)[0].innerText = window["currentCell"+newGame.moveCount].value
+            // console.log(window["currentCell"+newGame.moveCount])
+            newGameMove.currentMoveTokens = newGameMove.getCurrentMove(window["currentCell"+newGame.moveCount])
+            console.log(newGameMove.currentMoveTokens)
+            result.checkForTheResult(newGameMove.currentMoveTokens, newGame.winningMovesCombination)
+            newGame.updateMoveCount()
+
         });
     }
 }
@@ -95,15 +105,35 @@ class Player{
     }
 }
 class GameMove{
-    constructor(currentMoveTokens){
-        this.currentMoveTokens = currentMoveTokens;
+    getCurrentMove(currentCell){
+        var combinationArray = ['', '', '', '']
+        for(var i=0; i<=newGame.moveCount; i++){
+            if(currentCell.row == window["currentCell"+i].row){
+                combinationArray[0] += window["currentCell"+i].value
+            }
+            if(currentCell.column == window["currentCell"+i].column){
+                combinationArray[1] += window["currentCell"+i].value
+            }
+            if(currentCell.pDiagonal && window["currentCell"+i].pDiagonal){
+                combinationArray[2] += window["currentCell"+i].value
+            }
+            if(currentCell.sDiagonal && window["currentCell"+i].sDiagonal){
+                combinationArray[3] += window["currentCell"+i].value
+            }
+        }
+        return combinationArray
     }
+
+
 }
 class Result{
     constructor(){
         this.status = false;
     }
     checkForTheResult(currentMoveTokens, winningCombinations){
+        var result = (Player.getCurrentPlayer=="X") ? currentMoveTokens.includes(winningCombinations[1]) : currentMoveTokens.includes(winningCombinations[0])
         // the implementation is not needed yet
+        console.log(result)
+        
     }
 }
