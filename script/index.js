@@ -1,5 +1,5 @@
 class GameBoard{
-
+    //driver class
 }
 class Cell{
     constructor(currentRowIndex,currentColumnIndex,pDiagonal,sDiagonal,value){
@@ -8,6 +8,9 @@ class Cell{
         this.pDiagonal = pDiagonal;
         this.sDiagonal = sDiagonal;
         this.value = value;
+    }
+    generateCurrentCellMovesCombination(){
+        // the implementation is not needed yet
     }
 }
 class Game{
@@ -18,7 +21,7 @@ class Game{
     }
 
     updateMoveCount(){
-        this.moveCount += 1;
+        // the implementation is not needed yet
     }
 }
 class Player{
@@ -28,7 +31,7 @@ class Player{
     }
 
     setCurrentPlayer(){
-        this.currentPlayer?this.currentPlayer = false:this.currentPlayer = true;
+        // the implementation is not needed yet
     }
 }
 class GameMove{
@@ -41,8 +44,6 @@ class Result{
         this.status = false;
     }
     checkForTheResult(currentMoveTokens, winningCombinations){
-        if(currentMoveTokens.includes(winningCombinations)){
-
-        }
+        // the implementation is not needed yet
     }
 }
