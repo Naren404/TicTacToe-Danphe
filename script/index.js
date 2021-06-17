@@ -62,7 +62,8 @@ class GameBoard{
             var currentCell = new Cell(row,column,pDiagonal,sDiagonal, value);
             // newGame.updateMoveCount()
             (playerX.currentPlayer) ? playerO.updateCurrentPlayer(playerX) : playerX.updateCurrentPlayer(playerO)
-            
+            $(this).addClass("disabled1");
+            $(this)[0].innerText = currentCell.value
             console.log(currentCell)
         });
     }
