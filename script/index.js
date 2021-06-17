@@ -3,57 +3,17 @@ $('form').on('submit', function(event){
     $(this).hide();
     event.preventDefault();
     var enteredGameSize = parseInt($("#gameSize").val());
-
+    newGame = new Game(enteredGameSize);
     newGameBoard = new GameBoard;
-    newGameBoard.createGame(enteredGameSize);
     newGameBoard.createGameBoard(enteredGameSize);
-    newGameBoard.setGameArena(); //only for DOM stylings
+    playerX = new Player("X", true)
+    playerO = new Player("O", false)
+    newGameBoard.setAndHandleCellClick()
+    // newGameBoard.createGame(enteredGameSize);
+    // newGameBoard.setGameArena(); //only for DOM stylings
 }); 
 
-$("#game_board_table").on("click",".box",function() {
-    var row = $(this).data('row');
-    var column = $(this).data('col');
-    var pDiagonal = $(this).data("primaryDiagonal");
-    var sDiagonal = $(this).data('secondaryDiagonal');
 
-    var currentCell = new Cell(row,column,pDiagonal,sDiagonal);
-    console.log(currentCell)
-});
-class GameBoard{
-    //driver class
-    createGame(enteredGameSize){
-        var newGame = new Game(enteredGameSize);
-    }
-    createGameBoard(size){
-        var primaryDiagonal,secondaryDiagonal;
-        for (let row = 1; row <= size; row++) {
-            $("#game_board_table").append(`<tr id='row${row}'></tr>`);
-            for (let col = 1; col <= size; col++) {
-                primaryDiagonal = secondaryDiagonal = false;
-
-                if (row == col) primaryDiagonal = true;
-                if (row + col == size + 1) secondaryDiagonal = true;
-                
-                $(`#row${row}`).append(`<td class="box" data-row=${row} data-col=${col}  data-primaryDiagonal=${primaryDiagonal} data-secondaryDiagonal=${secondaryDiagonal} ></td>`);
-            }
-        }
-    }
-    setGameArena(){
-        $(".player1").show();
-    }
-}
-class Cell{
-    constructor(currentRowIndex,currentColumnIndex,pDiagonal,sDiagonal,value){
-        this.row = currentRowIndex;
-        this.column = currentColumnIndex;
-        this.pDiagonal = pDiagonal;
-        this.sDiagonal = sDiagonal;
-        this.value = value;
-    }
-    generateCurrentCellMovesCombination(){
-        // the implementation is not needed yet
-    }
-}
 class Game{
     constructor(size){
         this.size = size;
@@ -70,6 +30,51 @@ class Game{
     updateMoveCount(){
         // the implementation is not needed yet
     }
+    declareResult(){
+        // the implementation is not needed yet
+    }
+}
+
+class GameBoard{
+    createGameBoard(size){
+        var primaryDiagonal,secondaryDiagonal;
+        for (let row = 1; row <= size; row++) {
+            $("#game_board_table").append(`<tr id='row${row}'></tr>`);
+            for (let col = 1; col <= size; col++) {
+                primaryDiagonal = secondaryDiagonal = false;
+
+                if (row == col) primaryDiagonal = true;
+                if (row + col == size + 1) secondaryDiagonal = true;
+                
+                $(`#row${row}`).append(`<td class="box" data-row=${row} data-col=${col}  data-primary-diagonal=${primaryDiagonal} data-secondary-diagonal=${secondaryDiagonal} ></td>`);
+            }
+        }
+    }
+
+    setAndHandleCellClick(){
+        $("#game_board_table").on("click",".box",function() {
+            var row = $(this).data('row');
+            var column = $(this).data('col');
+            var pDiagonal = $(this).data("primary-diagonal");
+            var sDiagonal = $(this).data('secondary-diagonal');
+            var value = Player.getCurrentPlayer()
+
+            var currentCell = new Cell(row,column,pDiagonal,sDiagonal, value);
+            // newGame.updateMoveCount()
+            (playerX.currentPlayer) ? playerO.updateCurrentPlayer(playerX) : playerX.updateCurrentPlayer(playerO)
+            
+            console.log(currentCell)
+        });
+    }
+}
+class Cell{
+    constructor(currentRowIndex,currentColumnIndex,pDiagonal,sDiagonal,value){
+        this.row = currentRowIndex;
+        this.column = currentColumnIndex;
+        this.pDiagonal = pDiagonal;
+        this.sDiagonal = sDiagonal;
+        this.value = value;
+    }
 }
 class Player{
     constructor(playerToken,currentPlayer){
@@ -77,7 +82,14 @@ class Player{
         this.currentPlayer = currentPlayer; //boolean value
     }
 
-    setCurrentPlayer(){
+    updateCurrentPlayer(existingPlayer){
+        this.currentPlayer = true;
+        existingPlayer.currentPlayer = false;
+        // the implementation is not needed yet
+    }
+
+    static getCurrentPlayer(){
+        return (playerX.currentPlayer) ? "X" : "O"
         // the implementation is not needed yet
     }
 }
