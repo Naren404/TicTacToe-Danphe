@@ -33,28 +33,16 @@ form{
     border-spacing: 0px;
 	margin: 0px;
 }
-.player1{
+#playerX, #playerO{
 	margin-top:12px;
 	border: 2px solid gray;
 	border-radius: 10px;
 	padding: 4px;
 	display: none;
 }
-.player2{
-	margin-top:12px;
-	border: 2px solid gray;
-	border-radius: 10px;
-	padding: 4px;
-	display: none;
-}
-.disabled1{
+
+.visited-cell{
 	background-color:#ffd180;
-	font-size: 25px;
-	font-weight: bold;
-	text-align: center;
-}
-.disabled2{
-	background-color:#ff5722;
 	font-size: 25px;
 	font-weight: bold;
 	text-align: center;
