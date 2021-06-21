@@ -131,7 +131,7 @@ class Result{
         this.status = false;
     }
     checkForTheResult(currentMoveTokens, winningCombinations){
-        var result = (Player.getCurrentPlayer=="X") ? currentMoveTokens.includes(winningCombinations[1]) : currentMoveTokens.includes(winningCombinations[0])
+        var result = (Player.getCurrentPlayer=="X") ? currentMoveTokens.includes(winningCombinations[0]) : currentMoveTokens.includes(winningCombinations[1])
         // the implementation is not needed yet
         console.log(result)
         
