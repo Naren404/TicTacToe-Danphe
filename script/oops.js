@@ -6,15 +6,15 @@ $('form').on('submit', function(event){
 
     newGame = new Game(enteredGameSize);
 
-    if (!newGame.hasValidGameSize()){
-        alert("Enter valid Game Size:3 to 100");
-        newGame.restart();
-    } 
-    else{
+    if (newGame.hasValidGameSize()){
         gameBoard = new GameBoard
         playerO = new Player("O");
         playerX = new Player("X");
         newGame.start();
+    } 
+    else{
+        alert("Enter valid Game Size:3 to 100");
+        newGame.restart();
     }
 }); 
 
@@ -56,6 +56,9 @@ class Game{
             this.result = true;
         }
     }
+    checkDraw(){
+
+    }
 
 }
 
@@ -91,7 +94,14 @@ class GameBoard{
             gameBoard.setCurrentCellDOM($(this),currentPlayer);
 
             currentPlayer.setCurrentPlayerMove(cell);
-            newGame.checkResult()
+            var minimumMovesToGetResult = newGame.size * 2 - 1;
+            if(newGame.moveCount >= minimumMovesToGetResult){
+                newGame.checkResult()
+            }
+            var totalMoves = newGame.size * newGame.size
+            if(newGame.moveCount === totalMoves && !newGame.result){
+                gameBoard.declareDraw();
+            }
             gameBoard.declareResult(currentPlayer);
         });
     }
@@ -105,6 +115,11 @@ class GameBoard{
             newGame.end();
         }
     }
+    declareDraw(){
+            $("#result").html(`<p>Oops!! &#128529; <strong> Its a Draw.</strong>Play Again.</p>`)
+            newGame.end();
+        }
+    
     endGame(){
         $(".restart").show();
         $("#game_board_table").css("pointer-events", "none");
