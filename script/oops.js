@@ -4,17 +4,17 @@ $('form').on('submit', function(event){
 
     var enteredGameSize = parseInt($("#gameSize").val());
 
-    newGame = new Game(enteredGameSize);
+    game = new Game(enteredGameSize);
 
-    if (newGame.hasValidGameSize()){
+    if (game.hasValidGameSize()){
         gameBoard = new GameBoard
         playerO = new Player("O");
         playerX = new Player("X");
-        newGame.start();
+        game.start();
     } 
     else{
         alert("Enter valid Game Size:3 to 100");
-        newGame.restart();
+        game.restart();
     }
 }); 
 
@@ -28,12 +28,12 @@ class Game{
     }
 
     hasValidGameSize(){
-       return (this.size >=3 && this.size <= 100)?true:false
+       return (this.size >=3 && this.size <= 100) ? true : false
     }
     start(){
         gameBoard.createGameBoardLayout(this.size);
         gameBoard.setAndHandleBoardClickEvents();
-        gameBoard.setGameBoardActive();
+        gameBoard.displayFirstPlayerTurn();
     }
     end(){
         gameBoard.setGameBoardInactive();
@@ -60,7 +60,8 @@ class Game{
     }
 
     hasWinner(){
-        var currentPlayerMove =  this.setCurrentPlayer().playerMove;
+        var currentPlayer = this.setCurrentPlayer();
+        var currentPlayerMove =  currentPlayer.playerMove;
         if(Object.values(currentPlayerMove).includes(this.size)) {
             this.winner = true;
         }
@@ -88,53 +89,63 @@ class GameBoard{
     setAndHandleBoardClickEvents(){
         $("#game_board_table").on("click",".box",function() {
             $(this).css("pointer-events", "none");
-            newGame.updateMoveCount();
+            game.updateMoveCount();
 
-            var currentPlayer = newGame.setCurrentPlayer()
-            var cell = {
-                "row" : $(this).data('row'),
-                "col": $(this).data('col'),
-                "pDiagonal" : $(this).data("primary-diagonal"),
-                "sDiagonal" : $(this).data("secondary-diagonal"),
-                "value" : currentPlayer.token
-            }
-            gameBoard.setCurrentCellDOM($(this),currentPlayer);
+            var currentPlayer = game.setCurrentPlayer()
+            var currentCell = gameBoard.setCurrentCellAttributes($(this), currentPlayer)
 
-            currentPlayer.setCurrentPlayerMove(cell);
+            gameBoard.updateCurrentCellUI($(this),currentPlayer);
 
+            currentPlayer.setCurrentPlayerMove(currentCell);
             
-            newGame.checkResult()
-            if(newGame.hasWinner()) gameBoard.declareWinner(currentPlayer);
-            if(newGame.moveCount === newGame.totalMoves && !newGame.winner){
-                gameBoard.declareDraw();
-            }
+            game.checkResult()
+
+            gameBoard.declareResult(currentPlayer)
+            
             gameBoard.togglePlayerTurn()
             
         });
     }
 
+    setCurrentCellAttributes(currentCell, currentPlayer){
+        return {
+            "row" : currentCell.data('row'),
+            "col": currentCell.data('col'),
+            "pDiagonal" : currentCell.data("primary-diagonal"),
+            "sDiagonal" : currentCell.data("secondary-diagonal"),
+            "value" : currentPlayer.token
+        }
+    }
 
-    setGameBoardActive(){
+    displayFirstPlayerTurn(){
         $('#playerX').show();
     }
 
-    setCurrentCellDOM(currentCellDOM,currentPlayer){
-        currentCellDOM.addClass("visited-cell")
-        currentCellDOM[0].innerText = currentPlayer.token;
+    updateCurrentCellUI(currentUICell,currentPlayer){
+        currentUICell.addClass("visited-cell")
+        currentUICell[0].innerText = currentPlayer.token;
     }
 
     togglePlayerTurn(){
         $("#playerX,#playerO").toggle();
     }
 
+    declareResult(currentPlayer){
+        if(game.hasWinner()){
+            gameBoard.declareWinner(currentPlayer);
+        } else if(game.moveCount == game.totalMoves){
+            gameBoard.declareDraw();
+        }
+    }
+    
     declareWinner(currentPlayer){
         $("#result").html(`<p>Congratulations!! 🎉🎉 <strong> Player "${currentPlayer.token}" is the winner.</strong></p>`)
-        newGame.end();
+        game.end();
     }
 
     declareDraw(){
             $("#result").html(`<p>Oops!! &#128529; <strong> Its a Draw.</strong>Play Again.</p>`)
-            newGame.end();
+            game.end();
         }
     
 
@@ -146,7 +157,7 @@ class GameBoard{
 
     handleClickOnRestartButton(){
         $("#restart").click(function(){
-            newGame.restart();
+            game.restart();
         });
     }
 }
@@ -158,7 +169,6 @@ class Player{
     }
 
     setCurrentPlayerMove(cell){
-        
       this.playerMove[`row${cell.row}`] = (this.playerMove[`row${cell.row}`] || 0 ) + 1
       this.playerMove[`col${cell.col}`] = (this.playerMove[`col${cell.col}`] || 0 ) + 1 
       if (cell.pDiagonal) this.playerMove[`pDiagonal`] = (this.playerMove[`pDiagonal`] || 0 ) + 1 
